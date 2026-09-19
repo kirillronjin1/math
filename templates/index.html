@@ -15,7 +15,20 @@
         <div class="progress-container">
             <div id="progressBar" class="progress-bar"></div>
         </div>
-
+        {% if score is not none %}
+        <div class="result">
+            {% if score > total / 2 %}
+                <span class="emoji">🎉</span>
+                <p>Отличный результат!</p>
+                <p class="score-high">{{ score }} из {{ total }}</p>
+            {% else %}
+                <span class="emoji">🤔</span>
+                <p>Есть куда расти — попробуй ещё раз!</p>
+                <p class="score-low">{{ score }} из {{ total }}</p>
+            {% endif %}
+            <a href="/" class="retry-btn">Пройти заново</a>
+        </div>
+        {% endif %}
         <form method="post">
             {% for q in questions %}
             <div class="question-block">
@@ -69,21 +82,6 @@
             <button type="submit" class="submit-btn">Проверить ответы</button>
             {% endif %}
         </form>
-
-        {% if score is not none %}
-        <div class="result">
-            {% if score > total / 2 %}
-                <span class="emoji">🎉</span>
-                <p>Отличный результат!</p>
-                <p class="score-high">{{ score }} из {{ total }}</p>
-            {% else %}
-                <span class="emoji">🤔</span>
-                <p>Есть куда расти — попробуй ещё раз!</p>
-                <p class="score-low">{{ score }} из {{ total }}</p>
-            {% endif %}
-            <a href="/" class="retry-btn">Пройти заново</a>
-        </div>
-        {% endif %}
     </div>
 
     <script>
