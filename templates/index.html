@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Проверь школьные знания</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Проверь школьные знания</h1>
+            <p class="subtitle">Ответь на 5 вопросов и узнай свой результат</p>
+        </header>
+
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <form method="post">
+            {% for q in questions %}
+            <div class="question-block">
+                <div class="question-text">{{ q.question }}</div>
+                {% for option in q.options %}
+                {% set qid = 'q' ~ q.id %}
+                {% set user_answer = answers.get(q.id) %}
+                {% set is_correct_option = option == correct_map.get(q.id) %}
+                {% set is_user_choice = option == user_answer %}
+
+                {% if score is not none %}
+                    {% if is_correct_option %}
+                        <label class="option-label option-correct">
+                            <span class="mark">✓</span> {{ option }}
+                        </label>
+                    {% elif is_user_choice and not is_correct_option %}
+                        <label class="option-label option-wrong">
+                            <span class="mark">✗</span> {{ option }}
+                        </label>
+                    {% else %}
+                        <label class="option-label option-disabled">{{ option }}</label>
+                    {% endif %}
+                {% else %}
+                    <input type="radio" id="q{{ q.id }}_{{ loop.index }}" name="{{ qid }}" value="{{ option }}" required
+                        {% if user_answer == option %}checked{% endif %}>
+                    <label for="q{{ q.id }}_{{ loop.index }}" class="option-label">{{ option }}</label>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            {% if score is none %}
+            <button type="submit" class="submit-btn">Проверить ответы</button>
+            {% endif %}
+        </form>
+
+        {% if score is not none %}
+        <div class="result">
+            {% if score > total / 2 %}
+                <span class="emoji">🎉</span>
+                <p>Отличный результат!</p>
+                <p class="score-high">{{ score }} из {{ total }}</p>
+            {% else %}
+                <span class="emoji">🤔</span>
+                <p>Есть куда расти — попробуй ещё раз!</p>
+                <p class="score-low">{{ score }} из {{ total }}</p>
+            {% endif %}
+            <a href="/" class="retry-btn">Пройти заново</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const radios = document.querySelectorAll('input[type="radio"]');
+        const progress = document.getElementById('progressBar');
+
+        function updateProgress() {
+            const checked = document.querySelectorAll('input[type="radio"]:checked').length;
+            const percent = (checked / {{ total }}) * 100;
+            progress.style.width = percent + '%';
+        }
+
+        radios.forEach(r => r.addEventListener('change', updateProgress));
+    </script>
+</body>
+</html>
