@@ -9,7 +9,7 @@
     <div class="container">
         <header>
             <h1>Проверь школьные знания</h1>
-            <p class="subtitle">Ответь на 5 вопросов и узнай свой результат</p>
+            <p class="subtitle">Выбери тип высказывания и запиши его отрицание</p>
         </header>
 
         <div class="progress-container">
@@ -20,6 +20,7 @@
             {% for q in questions %}
             <div class="question-block">
                 <div class="question-text">{{ q.question }}</div>
+
                 {% for option in q.options %}
                 {% set qid = 'q' ~ q.id %}
                 {% set user_answer = answers.get(q.id) %}
@@ -44,6 +45,23 @@
                     <label for="q{{ q.id }}_{{ loop.index }}" class="option-label">{{ option }}</label>
                 {% endif %}
                 {% endfor %}
+
+                <!-- Поле для отрицания -->
+                <div class="negation-block">
+                    <label class="negation-label" for="negation{{ q.id }}">
+                        Запиши отрицание этого высказывания:
+                    </label>
+                    {% if score is not none %}
+                        <div class="negation-display">{{ negations.get(q.id, "—") }}</div>
+                    {% else %}
+                        <input type="text"
+                               id="negation{{ q.id }}"
+                               name="negation{{ q.id }}"
+                               class="negation-input"
+                               placeholder="Сюда пиши"
+                               value="{{ negations.get(q.id, '') }}">
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
 

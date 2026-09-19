@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Ответы пользователей</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ответы пользователей</h1>
+            <p class="subtitle">Всего записей: {{ rows|length }}</p>
+        </header>
+
+        {% if rows %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Высказывание</th>
+                    <th>Выбранный ответ</th>
+                    <th>Правильный</th>
+                    <th>Отрицание пользователя</th>
+                    <th>Время</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row.question }}</td>
+                    <td>{{ row.selected_option or "—" }}</td>
+                    <td>{{ row.correct }}</td>
+                    <td>{{ row.negation_text or "—" }}</td>
+                    <td>{{ row.submitted_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Пока никто не прошёл викторину.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
